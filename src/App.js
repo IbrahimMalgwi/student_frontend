@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Container, Typography } from '@mui/material';
+import FileUpload from './components/FileUpload';
+import StudentTable from './components/StudentTable';
 
-function App() {
+const App = () => {
+  const [students, setStudents] = useState([]);
+
+  const fetchStudents = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/students/');
+      setStudents(response.data);
+    } catch (err) {
+      console.error('Error fetching students', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Student Election System
+      </Typography>
+      <FileUpload onUploadComplete={fetchStudents} /> 
+       <StudentTable students={students} />
+    </Container>
+    // <></>
   );
-}
+};
 
 export default App;
